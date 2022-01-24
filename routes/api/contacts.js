@@ -1,4 +1,7 @@
 const express = require('express')
+const { addContactValidation,
+        updateContactValidation } = require('../../middlewares/validationMiddlewares')
+
 const {
   listContacts,
   getContactById,
@@ -30,7 +33,7 @@ router.get('/:contactId', async (req, res, next) => {
   
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/', addContactValidation ,async (req, res, next) => {
 
   addContact(req.body).then(contact => {
        res.status(201).json({ status: 'success' , contact })
@@ -53,7 +56,7 @@ router.delete('/:contactId', async (req, res, next) => {
 
 })
 
-router.put('/:contactId', async (req, res, next) => {
+router.put('/:contactId', updateContactValidation , async (req, res, next) => {
   updateContact(req.params.contactId, req.body).then(updatedContact => {
     if (updatedContact) {
       res.status(200).json({ message: 'contact updated' , updatedContact })

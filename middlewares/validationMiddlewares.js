@@ -1,11 +1,12 @@
 const Joi = require('joi');
 
+const {ValidationError} = require('../helpers/error')
+
 module.exports = {
     addContactValidation: (req, res, next) => {
         const schema = Joi.object({
              
             name: Joi.string()
-                    .alphanum() 
                     .min(3)
                     .max(30)
                     .required(),
@@ -17,13 +18,17 @@ module.exports = {
             phone: Joi.string()
                     .min(7)
                     .max(20)
-                    .required()
+                    .required(),
+            
+            favorite: Joi.boolean()
+            
     });
 
      const validationResult =  schema.validate(req.body);
 
-        if (validationResult.error) {
-          return res.status(400).json({message : "missing required name field"})
+                if (validationResult.error) {
+                
+                 next (new ValidationError (validationResult.error))
       }
   
         next()
@@ -31,32 +36,47 @@ module.exports = {
     updateContactValidation: (req, res, next) => {
          const schema = Joi.object({
              
-            name: Joi.string()
-                    .alphanum() 
+            name: Joi.string() 
                     .min(3)
                     .max(30)
-                    .optional()
-                 .required(),
+                    .optional(),
+                
              
             email: Joi.string()
                     .min(5)
                     .max(80)
-                    .optional()
-                    .required(),
+                    .optional(),
+                   
             
             phone: Joi.string()
                     .min(7)
                     .max(20)
-                    .optional()
-                    .required(),
+                         .optional(),
+            
+           favorite: Joi.boolean()
+            
+                   
          });
         
         const validationResult =  schema.validate(req.body);
 
         if (validationResult.error) {
-          return res.status(400).json({message :  "missing fields"})
+                 next (new ValidationError ('missing fields'))
       }
   
         next()
-     },
+        },
+    updateStatusValidation: (req, res, next) => {
+         const schema = Joi.object({
+           favorite: Joi.boolean()
+         });
+        
+        const validationResult =  schema.validate(req.body);
+
+        if (validationResult.error) {
+             next (new ValidationError ('missing field favorite'))    
+      }
+  
+        next()
+        },
 }

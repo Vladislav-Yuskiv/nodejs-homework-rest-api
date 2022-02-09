@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const {ValidationError} = require('../helpers/error')
+const {ValidationError , WrongParametersError} = require('../helpers/error')
 
 module.exports = {
     addContactValidation: (req, res, next) => {
@@ -51,7 +51,7 @@ module.exports = {
             phone: Joi.string()
                     .min(7)
                     .max(20)
-                         .optional(),
+                    .optional(),
             
            favorite: Joi.boolean()
             
@@ -79,4 +79,23 @@ module.exports = {
   
         next()
         },
+    userValidation: (req, res, next) => {
+         const schema = Joi.object({
+           email: Joi.string()
+                    .min(5)
+                    .max(80),
+                 
+           password: Joi.string()
+                    .min(5)
+                    .max(15),
+         });
+        
+        const validationResult =  schema.validate(req.body);
+
+        if (validationResult.error) {
+             next (new WrongParametersError('Wrong parametrs'))    
+      }
+  
+        next()
+    },
 }

@@ -8,20 +8,31 @@ const {
 } = require('../services/contactService')
 
 const getContactsController = async (req, res) => {
-    const contacts =  await getContacts()
+
+  const { _id: userId } = req.user;
+  
+  console.log(userId);
+  const contacts =  await getContacts(userId)
     
-    res.status(200).json({ contacts })
+  res.status(200).json({ contacts })
+
 }
 
 const getContactByIdController = async (req, res) => {
-    const contact = await getContactById(req.params.contactId)
+
+  const { _id: userId } = req.user;
+
+  const contact = await getContactById(req.params.contactId, userId)
+  
      res.status(200).json({ contact })
     
 }
 
 const addContactController = async (req, res) => {
 
-  const newContact = await addContact(req.body)
+  const { _id: userId } = req.user; 
+
+  const newContact = await addContact(req.body , userId)
 
   res.status(201).json({ status: 'success' , newContact })
    
@@ -30,7 +41,9 @@ const addContactController = async (req, res) => {
 
 const updateContactController = async (req, res) => {
 
-    const updatedContact = await updateContact(req.params.contactId , req.body)
+    const { _id: userId } = req.user; 
+
+    const updatedContact = await updateContact(req.params.contactId , req.body , userId)
 
     if (updatedContact) {
       res.status(200).json({ message: 'contact updated' , updatedContact })
@@ -43,12 +56,18 @@ const updateContactController = async (req, res) => {
 
 const removeContactController = async (req, res) => {
 
-    await deleteContact(req.params.contactId)
+    const { _id: userId } = req.user; 
+    
+    await deleteContact(req.params.contactId , userId)
     res.json({status: 'success'});
 }
 
 const updateStatusContactController = async (req, res) => {
-  const updatedContact = await updateStatusContact(req.params.contactId, req.body)
+
+
+  const { _id: userId } = req.user; 
+
+  const updatedContact = await updateStatusContact(req.params.contactId, req.body , userId)
 
     if (updatedContact) {
       res.status(200).json({ message: 'contact updated' , updatedContact })

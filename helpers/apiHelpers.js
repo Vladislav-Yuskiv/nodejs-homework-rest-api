@@ -1,4 +1,4 @@
-const {ValidationError ,NotFoundError} = require('../helpers/error')
+const {myCustomError} = require('../helpers/error')
 const asyncWrapper = (controller) => {
   return (req, res, next) => {
     controller(req, res).catch(next);
@@ -7,7 +7,7 @@ const asyncWrapper = (controller) => {
 
 const errorHandler = (error, req, res, next) => {
 
-    if (error instanceof ValidationError || error instanceof NotFoundError) {
+    if (error instanceof myCustomError ) {
         
         res.status(error.status).json({message: error.message});
 };
